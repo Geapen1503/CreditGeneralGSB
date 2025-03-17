@@ -1,12 +1,16 @@
 package cgb.transfert;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
+
 
 @Service
 public class TransferService {
+
 
     @Autowired
     private AccountRepository accountRepository;
@@ -26,25 +30,39 @@ public class TransferService {
         Account destinationAccount = accountRepository.findById(destinationAccountNumber)
                 				.orElseThrow(() -> new RuntimeException("Destination account not found"));
 
+
         /*Pas de découvert autorisé*/
         if (sourceAccount.getSolde().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient funds");
         }else {
 
-        sourceAccount.setSolde(sourceAccount.getSolde()-(amount)); 
-        destinationAccount.setSolde(destinationAccount.getSolde()+(amount));
+	
+	        sourceAccount.setSolde(sourceAccount.getSolde()-(amount)); 
+	        destinationAccount.setSolde(destinationAccount.getSolde()+(amount));
+	
+	
+	        accountRepository.save(sourceAccount);
+	        accountRepository.save(destinationAccount);
+	
+	
+	        Transfer transfer = new Transfer();
+	        transfer.setSourceAccountNumber(sourceAccountNumber);
+	        transfer.setDestinationAccountNumber(destinationAccountNumber);
+	        transfer.setAmount(amount);
+	        transfer.setTransferDate(transferDate);
+	        transfer.setDescription(description);
 
-        accountRepository.save(sourceAccount);
-        accountRepository.save(destinationAccount);
-
-        Transfer transfer = new Transfer();
-        transfer.setSourceAccountNumber(sourceAccountNumber);
-        transfer.setDestinationAccountNumber(destinationAccountNumber);
-        transfer.setAmount(amount);
-        transfer.setTransferDate(transferDate);
-        transfer.setDescription(description);
-
-        return transferRepository.save(transfer);
+	
+	        return transferRepository.save(transfer);
         }
     }
+    
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
+    }
 }
+
+
+
+
+

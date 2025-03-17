@@ -38,7 +38,7 @@ public class SecurityConfig {
 		.authorizeHttpRequests(
 				(requests) -> requests.anyRequest().authenticated()
 				)
-		.httpBasic(Customizer.withDefaults());
+		.httpBasic(Customizer.withDefaults()).headers().frameOptions().disable();
 		return http.build();
 	}
 
