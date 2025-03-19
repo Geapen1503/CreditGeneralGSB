@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cgb.transfert.IbanGenerator;
+import cgb.transfert.entity.Account;
+import cgb.transfert.repository.AccountRepository;
 import jakarta.annotation.PostConstruct;
 
 @Component
