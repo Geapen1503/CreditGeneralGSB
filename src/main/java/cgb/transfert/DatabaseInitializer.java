@@ -1,14 +1,14 @@
 package cgb.transfert;
 
-import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import cgb.transfert.IbanGenerator;
 import cgb.transfert.entity.Account;
 import cgb.transfert.repository.AccountRepository;
+import cgb.transfert.IbanGenerator;
 import jakarta.annotation.PostConstruct;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class DatabaseInitializer {
@@ -16,23 +16,29 @@ public class DatabaseInitializer {
     @Autowired
     private AccountRepository accountRepository;
 
+    private static final int IBAN_COUNT = 20; 
     @PostConstruct
     public void init() {
-        if (accountRepository.count() == 0) {
-           insertSampleData(accountRepository);
-        }
+        insertGeneratedIbans(accountRepository);
     }
 
-    public static void insertSampleData(AccountRepository accountRepository) {
-        Random random = new Random();
+    private void insertGeneratedIbans(AccountRepository accountRepository) {
+        Set<String> uniqueIbans = new HashSet<>();
 
-        for (int i = 0; i < 20; i++) {
+        while (uniqueIbans.size() < IBAN_COUNT) {
+            String newIban = IbanGenerator.generateValidIban();
+            if (!accountRepository.existsByAccountNumber(newIban)) {
+                uniqueIbans.add(newIban);
+            }
+        }
+
+        for (String iban : uniqueIbans) {
             Account account = new Account();
-            account.setAccountNumber(IbanGenerator.generateValidIban()); 
-            account.setSolde(Math.round((random.nextDouble() * 10000) * 100.0) / 100.0); 
+            account.setAccountNumber(iban);
+            account.setSolde(1000.00); 
             accountRepository.save(account);
         }
 
-        System.out.println("20 comptes avec IBAN valides ont été insérés dans la base.");
+        System.out.println("20 IBAN générés et insérés dans la base.");
     }
 }
