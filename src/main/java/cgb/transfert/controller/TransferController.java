@@ -34,15 +34,15 @@ public class TransferController {
     public ResponseEntity<?> createTransfer(@RequestBody TransferRequest transferRequest) {
     //public ResponseEntity<Transfer> createTransfer(@RequestBody TransferRequest transferRequest) {
         try {
-    	Transfer transfer = transferService.createTransfer(
-                transferRequest.getSourceAccountNumber(),
-                transferRequest.getDestinationAccountNumber(),
-                transferRequest.getAmount(),
-                transferRequest.getTransferDate(),
-                transferRequest.getDescription()
-        );
-    	return ResponseEntity.ok(transfer);
-        }catch (RuntimeException e) {
+	    	Transfer transfer = transferService.createTransfer(
+	                transferRequest.getSourceAccountNumber(),
+	                transferRequest.getDestinationAccountNumber(),
+	                transferRequest.getAmount(),
+	                transferRequest.getTransferDate(),
+	                transferRequest.getDescription()
+	        );
+	    	return ResponseEntity.ok(transfer);
+        } catch (RuntimeException e) {
             TransferResponse errorResponse = new TransferResponse("FAILURE", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
@@ -50,7 +50,7 @@ public class TransferController {
     }  
     
     @GetMapping("/accounts")
-    public ResponseEntity<?> getAllAccounts() {
+	public ResponseEntity<?> getAllAccounts() {
         try {
             List<Account> accounts = transferService.getAllAccounts();
             if (accounts.isEmpty()) {

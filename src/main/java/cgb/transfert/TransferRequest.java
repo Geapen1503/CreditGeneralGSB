@@ -11,6 +11,8 @@ public class TransferRequest {
     private Double amount;
     private LocalDate transferDate;
     private String description;
+    
+    
 	public String getSourceAccountNumber() {
 		return sourceAccountNumber;
 	}
