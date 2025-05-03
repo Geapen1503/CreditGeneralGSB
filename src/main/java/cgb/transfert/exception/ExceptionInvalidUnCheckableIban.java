@@ -1,7 +1,9 @@
 package cgb.transfert.exception;
 
 public class ExceptionInvalidUnCheckableIban extends ExceptionInvalideIBAN {
-    public ExceptionInvalidUnCheckableIban(String message) {
-        super("IBAN non vérifiable: " + message);
-    }
+
+	private static final long serialVersionUID = 1L;
+	 public ExceptionInvalidUnCheckableIban(String message) {
+	        super(message);
+	    }
 }

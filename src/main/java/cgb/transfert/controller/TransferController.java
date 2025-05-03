@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 import cgb.transfert.TransferRequest;
 import cgb.transfert.entity.Account;
+import cgb.transfert.entity.LotTransfer;
 import cgb.transfert.entity.Transfer;
+import cgb.transfert.service.LotTransferService;
 import cgb.transfert.service.TransferService;
+import ch.qos.logback.core.model.Model;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,56 +25,20 @@ public class TransferController {
 
     @Autowired
     private TransferService transferService;
-
-
-    @GetMapping("/test")
-    public String test() {
-        return "L'API fonctionne !";
-    }
-
-
-    @PostMapping
-    public ResponseEntity<?> createTransfer(@RequestBody TransferRequest transferRequest) {
-    //public ResponseEntity<Transfer> createTransfer(@RequestBody TransferRequest transferRequest) {
-        try {
-	    	Transfer transfer = transferService.createTransfer(
-	                transferRequest.getSourceAccountNumber(),
-	                transferRequest.getDestinationAccountNumber(),
-	                transferRequest.getAmount(),
-	                transferRequest.getTransferDate(),
-	                transferRequest.getDescription()
-	        );
-	    	return ResponseEntity.ok(transfer);
-        } catch (RuntimeException e) {
-            TransferResponse errorResponse = new TransferResponse("FAILURE", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        }
-        
-    }  
     
-    @GetMapping("/accounts")
-	public ResponseEntity<?> getAllAccounts() {
-        try {
-            List<Account> accounts = transferService.getAllAccounts();
-            if (accounts.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Aucun compte bancaire trouvé.");
-            }
-            return ResponseEntity.ok(accounts);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la récupération des comptes.");
-        }
-    }
-
-
-
-
-    /*
-    @PostMapping
-    public ResponseEntity<String> testTransfer(@RequestBody String s) {
-    	System.out.println("Post reçu");
-        return ResponseEntity.ok("Post bien traité: "+ s);
-    } 
-    */
+    @GetMapping("/all")
+	public ResponseEntity<?> getAllTransfers() {
+		try {
+			List<Transfer> transfers = transferService.getAllTranfers();
+			if (transfers.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Aucun compte bancaire trouvé.");
+			}
+			return ResponseEntity.ok(transfers);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Erreur lors de la récupération des comptes.");
+		}
+	}
     
 }
 
@@ -80,13 +47,11 @@ class TransferResponse {
     private String status;
     private String message;
 
-    // Constructeur
     public TransferResponse(String status, String message) {
         this.status = status;
         this.message = message;
     }
 
-    // Getters et Setters
     public String getStatus() {
         return status;
     }

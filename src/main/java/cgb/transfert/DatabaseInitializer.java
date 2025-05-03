@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import cgb.transfert.entity.Account;
 import cgb.transfert.repository.AccountRepository;
-import cgb.transfert.IbanGenerator;
+import cgb.transfert.utils.IbanGenerator;
 import jakarta.annotation.PostConstruct;
 
 import java.util.HashSet;
@@ -16,7 +16,8 @@ public class DatabaseInitializer {
     @Autowired
     private AccountRepository accountRepository;
 
-    private static final int IBAN_COUNT = 20; 
+    private static final int IBAN_COUNT = 20; // Nombre d'IBAN à générer
+
     @PostConstruct
     public void init() {
         insertGeneratedIbans(accountRepository);
@@ -35,7 +36,7 @@ public class DatabaseInitializer {
         for (String iban : uniqueIbans) {
             Account account = new Account();
             account.setAccountNumber(iban);
-            account.setSolde(1000.00); 
+            account.setSolde(1000.00); // Solde par défaut
             accountRepository.save(account);
         }
 
